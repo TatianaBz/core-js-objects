@@ -33,8 +33,18 @@ function shallowCopy(obj) {
  *    mergeObjects([{a: 1, b: 2}, {b: 3, c: 5}]) => {a: 1, b: 5, c: 5}
  *    mergeObjects([]) => {}
  */
-function mergeObjects(/* objects */) {
-  throw new Error('Not implemented');
+function mergeObjects(objects) {
+  const obj = objects[0];
+  if (objects.length !== 0 || objects !== undefined) {
+    for (let i = 1; i < objects.length; i += 1) {
+      Object.keys(objects[i]).forEach((el) => {
+        if (Object.hasOwn(objects[0], el) === true)
+          obj[el] = objects[0][el] + objects[i][el];
+        else obj[el] = objects[i][el];
+      });
+    }
+  }
+  return obj;
 }
 
 /**
@@ -50,8 +60,14 @@ function mergeObjects(/* objects */) {
  *    removeProperties({name: 'John', age: 30, city: 'New York'}, 'age') => {name: 'John', city: 'New York'}
  *
  */
-function removeProperties(/* obj, keys */) {
-  throw new Error('Not implemented');
+function removeProperties(obj, keys) {
+  const obj1 = obj;
+  if (obj.length !== 0 || obj1 !== undefined) {
+    keys.forEach((el) => {
+      if (Object.hasOwn(obj1, el) === true) delete obj1.el;
+    });
+  }
+  return obj1;
 }
 
 /**
@@ -66,8 +82,9 @@ function removeProperties(/* obj, keys */) {
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 2}) => true
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 3}) => false
  */
-function compareObjects(/* obj1, obj2 */) {
-  throw new Error('Not implemented');
+function compareObjects(obj1, obj2) {
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) return true;
+  return false;
 }
 
 /**
@@ -81,8 +98,12 @@ function compareObjects(/* obj1, obj2 */) {
  *    isEmptyObject({}) => true
  *    isEmptyObject({a: 1}) => false
  */
-function isEmptyObject(/* obj */) {
-  throw new Error('Not implemented');
+function isEmptyObject(obj) {
+  let flag = true;
+  obj.forEach((el) => {
+    if (el.enumerable === true) flag = false;
+  });
+  return flag;
 }
 
 /**
@@ -101,8 +122,8 @@ function isEmptyObject(/* obj */) {
  *    immutableObj.newProp = 'new';
  *    console.log(immutableObj) => {a: 1, b: 2}
  */
-function makeImmutable(/* obj */) {
-  throw new Error('Not implemented');
+function makeImmutable(obj) {
+  return Object.create(obj);
 }
 
 /**
@@ -280,19 +301,19 @@ function group(/* array, keySelector, valueSelector */) {
  *  builder.id('main').class('container').class('editable').stringify()
  *    => '#main.container.editable'
  *
- *  builder.element('a').attr('href$=".png"').pseudoClass('focus').stringify()
+ *  builder[el]ement('a').attr('href$=".png"').pseudoClass('focus').stringify()
  *    => 'a[href$=".png"]:focus'
  *
  *  builder.combine(
- *      builder.element('div').id('main').class('container').class('draggable'),
+ *      builder[el]ement('div').id('main').class('container').class('draggable'),
  *      '+',
  *      builder.combine(
- *          builder.element('table').id('data'),
+ *          builder[el]ement('table').id('data'),
  *          '~',
  *           builder.combine(
- *               builder.element('tr').pseudoClass('nth-of-type(even)'),
+ *               builder[el]ement('tr').pseudoClass('nth-of-type(even)'),
  *               ' ',
- *               builder.element('td').pseudoClass('nth-of-type(even)')
+ *               builder[el]ement('td').pseudoClass('nth-of-type(even)')
  *           )
  *      )
  *  ).stringify()
